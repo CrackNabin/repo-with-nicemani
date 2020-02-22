@@ -1,17 +1,18 @@
-
-
+#include "BinaryTree.h"
 #define MAX_SIZE 100
 class ArrayBST : public BinarySearchTree
 {
-	private:
-		int element[MAX_SIZE];
-	public:
-		ArrayBST();
-		~ArrayBST();
-		
-		void preorderTraversal();
-		void add(int data);
-		bool search (int data);
+private:
+	int element[MAX_SIZE];
+
+public:
+	ArrayBST();
+	~ArrayBST();
+	void preorderTraversal();
+	void add(int data);
+	bool search(int data);
+	int getMax();
+	int getMin();
+	int max();
+	int min();
 };
-
-

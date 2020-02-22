@@ -1,97 +1,137 @@
 #include "BinaryTree.h"
-class Node{
+class Node
+{
 public:
     int data;
     Node *left;
     Node *right;
-    Node(){
-        data=0;
-        left=right=NULL;
+    Node()
+    {
+        data = 0;
+        left = right = NULL;
     }
     friend class LinkedBST;
 };
 
-
-
-class LinkedBST:public BinarySearchTree{
-    public:
+class LinkedBST : public BinarySearchTree
+{
+public:
     Node *root;
     LinkedBST();
     ~LinkedBST();
     void preorderTraversal();
     void preorderTraversal(Node *root);
     void add(int data);
-    void add(Node *&root,int data);
+    void add(Node *&root, int data);
     bool search(int data);
-    bool search(Node *&root,int targetKey);
+    bool search(Node *&root, int targetKey);
     void add(Node *&subtree, Node *newNode);
+    int min();
+    int max();
+    void deleteBST(Node *root, int keyToDelete);
 };
 
-
-LinkedBST::LinkedBST(){
-    root=NULL;
+LinkedBST::LinkedBST()
+{
+    root = NULL;
 }
 
-LinkedBST::~LinkedBST(){}
+LinkedBST::~LinkedBST() {}
 
-void LinkedBST::add(int data){
-    add(root,data);
+void LinkedBST::add(int data)
+{
+    add(root, data);
 }
 
-void LinkedBST::preorderTraversal(){}
+void LinkedBST::preorderTraversal() {}
 
-bool LinkedBST::search(int data){}
+bool LinkedBST::search(int data) {}
 
-
-void LinkedBST::add(Node *&root,int data){
-    Node *newNode=new Node();
-    newNode->data=data;
-    if(root==NULL){
-        root=new Node();
-        this->root=newNode;
+void LinkedBST::add(Node *&root, int data)
+{
+    Node *newNode = new Node();
+    newNode->data = data;
+    if (root == NULL)
+    {
+        root = new Node();
+        this->root = newNode;
     }
-    else{
-        add(root,newNode);
+    else
+    {
+        add(root, newNode);
     }
 }
 
-void LinkedBST::add(Node *&subtree, Node *newNode){
-    if(subtree->data>newNode->data){
-        if(subtree->left!=NULL){
-            add(subtree->left,newNode);
+void LinkedBST::add(Node *&subtree, Node *newNode)
+{
+    if (subtree->data > newNode->data)
+    {
+        if (subtree->left != NULL)
+        {
+            add(subtree->left, newNode);
         }
-        else{
-            subtree->left=newNode;
+        else
+        {
+            subtree->left = newNode;
         }
     }
-    else{
-        if(subtree->right!=NULL){
-            add(subtree->right,newNode);
+    else
+    {
+        if (subtree->right != NULL)
+        {
+            add(subtree->right, newNode);
         }
-        else{
-            subtree->right=newNode;
+        else
+        {
+            subtree->right = newNode;
         }
-    }   
+    }
 }
 
-bool LinkedBST::search(Node *&root,int targetKey){
-    if(root==NULL){
-        std::cout<<"It is a Null tree"<<std::endl;
+int LinkedBST::min()
+{
+    while (root->left != NULL)
+    {
+        root = root->left;
     }
-    else{
-        Node *p=new Node();
-        p=root;
-        while(p!=NULL){
-            if(targetKey>p->data){
-                p=p->right;
+    return root->data;
+}
+
+int LinkedBST::max()
+{
+    while (root->right != NULL)
+    {
+        root = root->right;
+    }
+    return root->data;
+}
+
+bool LinkedBST::search(Node *&root, int targetKey)
+{
+    if (root == NULL)
+    {
+        std::cout << "It is a Null tree" << std::endl;
+    }
+    else
+    {
+        Node *p = new Node();
+        p = root;
+        while (p != NULL)
+        {
+            if (targetKey > p->data)
+            {
+                p = p->right;
             }
-            else if(targetKey<p->data){
-                p=p->left;
+            else if (targetKey < p->data)
+            {
+                p = p->left;
             }
-            else if(targetKey==p->data){
+            else if (targetKey == p->data)
+            {
                 return true;
             }
-            else{
+            else
+            {
                 return false;
             }
         }
@@ -99,19 +139,92 @@ bool LinkedBST::search(Node *&root,int targetKey){
     return false;
 }
 
+void LinkedBST::preorderTraversal(Node *root)
+{
+    if (root == NULL)
+        return;
 
-void LinkedBST::preorderTraversal(Node* root) { 
-    if (root == NULL) 
-    return; 
-  
     /* first print data of node */
-    std::cout << root->data << " "; 
-  
+    std::cout << root->data << " ";
+
     /* then recur on left subtree */
-    preorderTraversal(root->left);  
-  
+    preorderTraversal(root->left);
+
     /* now recur on right subtree */
-    preorderTraversal(root->right); 
-}   
+    preorderTraversal(root->right);
+}
 
+void LinkedBST::deleteBST(Node *root, int keytoDelete)
+{
+    int dat;
+    if (root == NULL)
+    {
+        std::cout << "tree is empty" << std::endl;
+        return;
+    }
+    if (keytoDelete < root->data)
+    {
+        Node *temp = new Node();
+        temp = root->left;
+        if (root->left->data == keytoDelete && root->left->left == NULL && root->left->right == NULL)
+        {
+            root->left = NULL;
+        }
+        deleteBST(temp, keytoDelete);
+        return;
+    }
+    else if (keytoDelete > root->data)
+    {
+        Node *temp = new Node();
+        temp = root->right;
+        if (root->right->data == keytoDelete && root->right->left == NULL && root->right->right == NULL)
+        {
+            root->right = NULL;
+        }
+        deleteBST(temp, keytoDelete);
+        return;
+    }
+    else
+    {
+        if (root->left == NULL && root->right == NULL)
+        {
+            delete root;
+            root = NULL;
+            return;
+        }
+        else if (root->left == NULL)
+        {
+            Node *temp = new Node();
+            temp = root->right;
+            root->data = root->right->data;
+            root->right = root->right->right;
+            delete temp;
+            return;
+        }
+        else if (root->right == NULL)
+        {
+            Node *temp = new Node();
+            temp = root->left;
+            root->data = root->left->data;
+            root->left = root->left->left;
+            delete temp;
+            return;
+        }
+        else
+        {
+            Node *nodetoDelete = new Node();
+            nodetoDelete = root;
+            Node *newNode = new Node();
+            newNode = root->left;
+            while (newNode->right != NULL)
+            {
+                newNode = newNode->right;
+            }
+            dat = newNode->data;
+            deleteBST(nodetoDelete, newNode->data);
+            root->data = dat;
 
+            return;
+        }
+    }
+}
